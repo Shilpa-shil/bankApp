@@ -16,9 +16,9 @@ export class RegisterComponent implements OnInit {
 
   //form group
   registerForm = this.fb.group({
-    acno: [''],
-    pswd: [''],
-    uname: ['', [Validators.required, Validators.pattern('[a-zA-Z]*')]]
+    acno: ['',[Validators.required, Validators.pattern('[0-9]*')]],
+    pswd: ['',[Validators.required, Validators.pattern('[a-zA-Z0-9]*')]],
+    uname: ['', [Validators.required, Validators.pattern('[a-zA-Z ]*')]]
   })
 
   constructor(private ds: DataService, private router: Router, private fb: FormBuilder) { }
