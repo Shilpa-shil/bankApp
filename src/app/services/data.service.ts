@@ -6,13 +6,45 @@ import { Injectable } from '@angular/core';
 export class DataService {
    //DATABASE
    db:any ={
-    1000: {"acno":1000,"username":"Neer", "password":1000,"balance":5000},
-    1001: {"acno":1001,"username":"Lysha", "password":1001,"balance":5000},
-    1002: {"acno":1002,"username":"vypa", "password":1002,"balance":3000}
+    1000: {"acno":1000,"username":"Neer", "password":1000,"balance":5000,transaction:[]},
+    1001: {"acno":1001,"username":"Lysha", "password":1001,"balance":5000,transaction:[]},
+    1002: {"acno":1002,"username":"vypa", "password":1002,"balance":3000,transaction:[]}
   }
 
+  currentUser:any
 
-  constructor() { }
+  constructor() { 
+    this.getDetails()
+  }
+
+  //get deatils from local storage
+getDetails()
+{
+  if(localStorage.getItem("database"))
+  {
+    this.db =JSON.parse(localStorage.getItem("database")||'')
+  }
+  if(localStorage.getItem("currentUser"))
+  {
+    this.currentUser =JSON.parse(localStorage.getItem("currentUser")||'')
+  }
+}
+
+//save details
+saveDetails()
+{
+  if(this.db)
+  {
+    localStorage.setItem("database",JSON.stringify(this.db))
+  }
+  if(this.currentUser)
+  {
+    localStorage.setItem("currentUser",JSON.stringify(this.currentUser))
+
+  }
+}
+
+  //login
   login(acno:any,pswd:any)
   {
   
@@ -21,6 +53,8 @@ export class DataService {
     {
       if(pswd == db[acno]["password"])
       {
+        this.currentUser = db[acno]["username"]
+        this.saveDetails()
         return true
       }
       else{
@@ -41,6 +75,8 @@ export class DataService {
 
     if(acno in db)
     {
+      this.saveDetails()
+
       return false
     }
     else{
@@ -49,7 +85,8 @@ export class DataService {
         acno,
         username,
         password,
-        "balance":0
+        "balance":0,
+        transaction:[]
       }
       console.log(db)
       return true;
@@ -66,6 +103,13 @@ export class DataService {
           if(pswd == db[acno]["password"])
           {
             db[acno]["balance"]+=amount
+            db[acno].transaction.push({
+            type:"CREDIT",
+            amount:amount
+            })
+            // console.log(db);
+            this.saveDetails()
+
             return db[acno]["balance"]
           }
           else{
@@ -91,6 +135,13 @@ withdraw(acno:any,pswd:any,amt:any)
       {
 
       db[acno]["balance"]-=amount
+      db[acno].transaction.push({
+        type:"DEBIT",
+        amount:amount
+        })
+
+      this.saveDetails()
+
       return db[acno]["balance"]
     }
     else{
