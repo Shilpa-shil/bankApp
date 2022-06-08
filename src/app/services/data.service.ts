@@ -12,9 +12,10 @@ export class DataService {
   }
 
   currentUser:any
+currentAcno:any
 
   constructor() { 
-    this.getDetails()
+  this.getDetails()
   }
 
   //get deatils from local storage
@@ -27,6 +28,10 @@ getDetails()
   if(localStorage.getItem("currentUser"))
   {
     this.currentUser =JSON.parse(localStorage.getItem("currentUser")||'')
+  }
+  if(localStorage.getItem("currentAcno"))
+  {
+    this.currentAcno =JSON.parse(localStorage.getItem("currentAcno")||'')
   }
 }
 
@@ -42,6 +47,11 @@ saveDetails()
     localStorage.setItem("currentUser",JSON.stringify(this.currentUser))
 
   }
+  if(this.currentAcno)
+  {
+    localStorage.setItem("currentAcno",JSON.stringify(this.currentAcno))
+
+  }
 }
 
   //login
@@ -54,6 +64,7 @@ saveDetails()
       if(pswd == db[acno]["password"])
       {
         this.currentUser = db[acno]["username"]
+        this.currentAcno=acno
         this.saveDetails()
         return true
       }
@@ -156,6 +167,11 @@ withdraw(acno:any,pswd:any,amt:any)
   alert("user doesnot exist")
   return false
 }
+}
+
+getTransaction(acno:any)
+{
+  return this.db[acno].transaction
 }
 
 }
