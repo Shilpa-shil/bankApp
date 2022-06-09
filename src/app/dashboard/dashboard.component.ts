@@ -31,9 +31,10 @@ export class DashboardComponent implements OnInit {
   })
 
    user:any
-
+lDate:any
   constructor(private ds:DataService,private fb:FormBuilder,private router:Router) {
     this.user=this.ds.currentUser
+    this.lDate=new Date()
    }
 
   ngOnInit(): void {
