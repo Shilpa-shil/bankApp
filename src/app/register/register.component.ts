@@ -16,8 +16,8 @@ export class RegisterComponent implements OnInit {
 
   //form group
   registerForm = this.fb.group({
-    acno: ['',[Validators.required, Validators.pattern('[0-9]*')]],
-    pswd: ['',[Validators.required, Validators.pattern('[a-zA-Z0-9]*')]],
+    acno: ['', [Validators.required, Validators.pattern('[0-9]*')]],
+    pswd: ['', [Validators.required, Validators.pattern('[a-zA-Z0-9]*')]],
     uname: ['', [Validators.required, Validators.pattern('[a-zA-Z ]*')]]
   })
 
@@ -25,24 +25,29 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
   register() {
     var uname = this.registerForm.value.uname
     var acno = this.registerForm.value.acno
     var pswd = this.registerForm.value.pswd
 
     if (this.registerForm.valid) {
-      const result = this.ds.register(uname, acno, pswd)
-      if (result) {
-        alert("successfully registered")
-        this.router.navigateByUrl("")
-      }
-      else {
-        alert("already existing user..pls log in")
-      }
+      //async
+      this.ds.register(uname, acno, pswd)
+        .subscribe((result: any) => {
+          if (result) {
+            alert(result.message)
+            this.router.navigateByUrl("")
+          }
+        },
+          result => {
+            alert(result.error.message)
+          }
+        )
     }
+
     else {
-      alert("invalid input")
+      alert("Invalid form")
     }
+
   }
 }
